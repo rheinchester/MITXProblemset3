@@ -196,24 +196,32 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
     clearProb: Maximum clearance probability (a float between 0-1)
     numTrials: number of simulation runs to execute (an integer)
     """
-    overallMean = []
-    for j in range(numTrials):
-        viruses = [SimpleVirus(maxBirthProb, clearProb) for i in range(numViruses)]
+    def buildMeanList():
+        viruses = [SimpleVirus(maxBirthProb, clearProb)
+                   for i in range(numViruses)]
         juliet = Patient(viruses, maxPop)
         i = 1
         totMean = []
         listsMean = []
         while i <= 300:
             juliet.update()
-            listsMean.append(juliet.getTotalPop())
+            listsMean.append(float(juliet.getTotalPop()))
             i += 1
-        
-        pylab.plot(listsMean, label="SimpleVirus")
-        pylab.title("SimpleVirus simulation")
-        pylab.xlabel("Time Steps")
-        pylab.ylabel("Average Virus Population")
-        pylab.legend(loc="best")
-        pylab.show()
+        return listsMean
+
+    # print(buildMeanList())
+    listOfMeans = np.array([buildMeanList() for i in range(numTrials)])
+    sumPerTrial = np.sum(listOfMeans, axis=0, keepdims=True)
+    totalMean = sumPerTrial/numTrials
+    plotMean = totalMean[0]
+
+    pylab.plot(plotMean, label="SimpleVirus")
+    pylab.title("SimpleVirus simulation")
+    pylab.xlabel("Time Steps")
+    pylab.ylabel("Average Virus Population")
+    pylab.legend(loc="best")
+    pylab.show()
+
 
         
 
