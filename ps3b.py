@@ -209,7 +209,7 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
             i += 1
         return listsMean
 
-    # print(buildMeanList())
+    
     listOfMeans = np.array([buildMeanList() for i in range(numTrials)])
     sumPerTrial = np.sum(listOfMeans, axis=0, keepdims=True)
     totalMean = sumPerTrial/numTrials
