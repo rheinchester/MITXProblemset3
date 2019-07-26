@@ -206,7 +206,8 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
             i += 1
         return listsMean
 
-    listOfMeans = np.array([buildMeanList() for i in range(numTrials)])  # shape = (30 , numTrials)
+    
+    listOfMeans = np.array([buildMeanList() for i in range(numTrials)])
     sumPerTrial = np.sum(listOfMeans, axis=0, keepdims=True)
     overallMean = sumPerTrial/numTrials  # shape = (1, numTrials)
     toPlot = overallMean[0]  
