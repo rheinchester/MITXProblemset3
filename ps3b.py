@@ -197,25 +197,21 @@ def simulationWithoutDrug(numViruses, maxPop, maxBirthProb, clearProb,
     numTrials: number of simulation runs to execute (an integer)
     """
     def buildMeanList():
-        viruses = [SimpleVirus(maxBirthProb, clearProb)
-                   for i in range(numViruses)]
+        viruses = [SimpleVirus(maxBirthProb, clearProb) for i in range(numViruses)]
         juliet = Patient(viruses, maxPop)
-        i = 1
-        totMean = []
-        listsMean = []
-        while i <= 300:
+        listsMean, i = [], 1
+        while i <= 30:
             juliet.update()
             listsMean.append(float(juliet.getTotalPop()))
             i += 1
         return listsMean
 
-    # print(buildMeanList())
-    listOfMeans = np.array([buildMeanList() for i in range(numTrials)])
+    listOfMeans = np.array([buildMeanList() for i in range(numTrials)])  # shape = (30 , numTrials)
     sumPerTrial = np.sum(listOfMeans, axis=0, keepdims=True)
-    totalMean = sumPerTrial/numTrials
-    plotMean = totalMean[0]
+    overallMean = sumPerTrial/numTrials  # shape = (1, numTrials)
+    toPlot = overallMean[0]  
 
-    pylab.plot(plotMean, label="SimpleVirus")
+    pylab.plot(toPlot, label="SimpleVirus")
     pylab.title("SimpleVirus simulation")
     pylab.xlabel("Time Steps")
     pylab.ylabel("Average Virus Population")
@@ -251,21 +247,28 @@ class ResistantVirus(SimpleVirus):
         mutProb: Mutation probability for this virus particle (a float). This is
         the probability of the offspring acquiring or losing resistance to a drug.
         """
+        super().__init__(maxBirthProb, clearProb)
+        self.resistances = resistances
+        self.mutProb = mutProb
 
-        # TODO
 
+    # def handleInstance(self, obj):
+    #     if not isinstance(obj, dict):
+    #         resistances = {obj: True}
+    #         return resistances
+    #     return obj
 
     def getResistances(self):
         """
         Returns the resistances for this virus.
         """
-        # TODO
+        return self.resistances
 
     def getMutProb(self):
         """
         Returns the mutation probability for this virus.
         """
-        # TODO
+        return self.mutProb
 
     def isResistantTo(self, drug):
         """
@@ -279,10 +282,22 @@ class ResistantVirus(SimpleVirus):
         otherwise.
         """
         
-        # TODO
+        if drug in self.resistances and  self.resistances[drug]==True:
+            return True
+        else:
+            return False
+
+    def willInheritResistance(self):
+        """ switch resistance with probability """
+        for drug in self.resistances.copy():
+            resistance = self.resistances[drug]
+            if random.random()  <= self.mutProb:
+                self.resistances[drug] = not resistance
+        return self.resistances
 
 
-    def reproduce(self, popDensity, activeDrugs):
+
+    def reproduce(self, popDensity, activeDrugs=[]):
         """
         Stochastically determines whether this virus particle reproduces at a
         time step. Called by the update() method in the TreatedPatient class.
@@ -326,8 +341,18 @@ class ResistantVirus(SimpleVirus):
         maxBirthProb and clearProb values as this virus. Raises a
         NoChildException if this virus particle does not reproduce.
         """
-
         
+
+        for drug in activeDrugs:
+            if self.isResistantTo(drug) == False:
+                raise NoChildException
+        birthProb = self.maxBirthProb * (1 - popDensity)
+        if birthProb == 0:
+            raise NoChildException
+        else:
+            self.resistances = self.willInheritResistance()
+            if random.random() <= birthProb:
+                return ResistantVirus(self.maxBirthProb, self.clearProb, self.resistances, self.mutProb)
 
             
 
@@ -446,3 +471,21 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     # TODO
 
 
+# def handleInstance(obj):
+#     if not isinstance(obj, dict):
+#         resistances = {obj: True}
+#         return resistances
+#     return obj
+# jeff = 'name'
+# manny = {'name': True}
+# print(handleInstance(manny))
+
+
+
+# julius = ResistantVirus(1.0, 0.0, {'Abel': True}, 0.0)
+# # # viruses = [julius]
+# juliet = Patient(julius, 100)
+# print(juliet.update())
+virus = ResistantVirus(1.0, 0.0, {"drug1": True, "drug2": False}, 0.0)
+child = virus.reproduce(0, ["drug2"])
+print(child)
