@@ -480,48 +480,40 @@ def simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances,
     numTrials: number of simulation runs to execute (an integer)
 
     """
-    def runSim(lists, resistList, patient):
-        for i in range(150):
+    steps = 300
+    treatOnStep = 150
+    trialResultsTot = [[] for s in range(steps)]
+    trialResultsRes = [[] for s in range(steps)]
+    for i in range(numTrials):
+        viruses = [ResistantVirus(
+            maxBirthProb, clearProb, resistances.copy(), mutProb)for v in range(numViruses)]
+        patient = TreatedPatient(viruses, maxPop)
+        for step in range(len(trialResultsTot)):
+            if step == treatOnStep:
+                patient.addPrescription("guttagonol")
             patient.update()
-            lists.append(float(patient.getTotalPop()))
-            resistList.append(patient.getResistPop(['guttagonol']))
-            i += 1
-        return lists, resistList
-    popList, resistList = [], []
-    viruses = [ResistantVirus(maxBirthProb, clearProb, resistances, mutProb) for i in range(numViruses)]
-    juliet = TreatedPatient(viruses, maxPop)
-    runSim(popList, resistList, juliet)
-    juliet.addPrescription('guttagonol')
-    runSim(popList, resistList, juliet)
-    
-    pylab.plot(popList, label="TotalPop")
-    pylab.plot(resistList, label="ResisitantPop")
-    pylab.title("Resistant simulation")
-    pylab.xlabel("Time Steps")
-    pylab.ylabel("Average Virus Population")
-    pylab.legend(loc="best")
+            trialResultsTot[step].append(patient.getTotalPop())
+            trialResultsRes[step].append(patient.getResistPop(["guttagonol"]))
+    resultsSummaryTot = [sum(l) / float(len(l)) for l in trialResultsTot]
+    resultsSummaryRes = [sum(l) / float(len(l)) for l in trialResultsRes]
+
+    pylab.plot(resultsSummaryTot, label="Total Virus Population")
+    pylab.plot(resultsSummaryRes, label="Resistant Virus Population")
+    pylab.title("ResistantVirus simulation")
+    pylab.xlabel("time step")
+    pylab.ylabel("# viruses")
+    pylab.legend()
     pylab.show()
 
 
-# %%
-virus1 = ResistantVirus(1.0, 0.0, {"drug1": True}, 0.0)
-virus2 = ResistantVirus(1.0, 0.0, {"drug1": False}, 0.0)
-patient = TreatedPatient([virus2, virus1], 10)
-patient.addPrescription("drug1")
-# i = 0
-# lists = []
-# while i < 15 :
-#     patient.update()
-#     lists.append(patient.getTotalPop())
-#     i +=1
-# print(patient.getResistPop(['drug1']), patient.getTotalPop())
 
-numViruses = 10
+
+numViruses = 100
 maxPop = 1000
 maxBirthProb = 0.1
-clearProb = 0.05
-resistances = {'guttagonol': False}
-mutProb = 0.05
+clearProb = 0.005
+resistances = {'guttagonol': True}
+mutProb = 0.01
 numTrials = 10
 # %%
 simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances, mutProb, numTrials)
@@ -569,18 +561,11 @@ simulationWithDrug(numViruses, maxPop, maxBirthProb, clearProb, resistances, mut
 # pylab.legend(loc="best")
 # pylab.show()
 
+
+
 #%%
-import numpy as np
-a0 = [1, 2, 3]
-a1 = [1, 2, 3]
-a2 = [1, 2, 3]
-a3 = [1, 2, 3]
-a4 = [1, 2, 3]
-A = [ a0, a1, a2, a3, a4 ]
-newList = []
-for i in range(len(A)):
-    x = 0
-    for j in range(len(A)):
-        x += A[i][0]
-        newList.append
-print (x)
+import nltk
+import sklearn
+
+print('The nltk version is {}.'.format(nltk.__version__))
+print('The scikit-learn version is {}.'.format(sklearn.__version__))
