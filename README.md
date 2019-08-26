@@ -5,4 +5,4 @@ In this problem, I used the principles of the Monte-carlo simulation to mimic th
 
 pylab was used to generate basic plots
 
-To view this code in action, just install anaconda, and the plots shall work fine.
+To view this code in action: install anaconda, and the plots will work fine.
