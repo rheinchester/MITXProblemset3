@@ -4,3 +4,5 @@ Part of the problem sets of the MIT course Entitled Introduction to computationa
 In this problem, I used the principles of the Monte-carlo simulation to mimic the growth of a virus in a patient; and the effect of drugs on the growth rate of said virus.
 
 pylab was used to generate basic plots
+
+To view this code in action, just install anaconda, and the plots shall work fine.
