@@ -9,4 +9,4 @@ In this problem, I used the principles of the Monte-carlo simulation to mimic th
 pylab was used to generate basic plots
 numpy was used to run computations the multidimensional arrays for the simulation
 
-To view this code in action: install anaconda, and the plots will work fine.
+To view this code in action: install anaconda, and the plots will work fine. 
