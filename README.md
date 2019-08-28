@@ -3,8 +3,7 @@
 
 
 ## Summary
-In this problem, I used the principles of the Monte-carlo simulation to mimic the growth of a virus in a patient; and the effect of drugs on the growth rate of said virus.
-
+The Monte-Carlo algorithm is used to simulate virus growth and drug effect in the body of a patient.
 ## Libraries
 pylab was used to generate basic plots
 numpy was used to run computations the multidimensional arrays for the simulation
