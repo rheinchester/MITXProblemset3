@@ -4,7 +4,7 @@
 
 ## Summary
 The Monte-Carlo algorithm is used to simulate virus-growth and drug-effect in the body of a patient.
-The main body of the code can be found in ps3.py
+The main body of the code can be found in ps3b.py
 ## Libraries
 pylab was used to generate basic plots
 
